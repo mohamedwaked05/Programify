@@ -628,3 +628,268 @@ select {
     grid-template-columns: 20px 1fr 48px 48px 44px 52px;
   }
 }
+
+/* ============================================================
+   HEADER ADDITIONS
+   ============================================================ */
+
+.header-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   PROGRAM STATUS BAR
+   ============================================================ */
+
+.program-status {
+  background: var(--accent-light);
+  border-bottom: 1px solid #bfdbfe;
+}
+
+.program-status.hidden { display: none; }
+
+.status-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 7px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.status-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.status-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-left: 5px;
+}
+
+.status-dirty {
+  font-size: 0.75rem;
+  color: var(--warning);
+  margin-left: 8px;
+  font-style: italic;
+}
+
+.status-dirty.hidden { display: none; }
+
+.status-info { display: flex; align-items: center; }
+.status-actions { display: flex; align-items: center; gap: 6px; }
+
+/* ============================================================
+   PROGRAMS DRAWER (right slide-in panel)
+   ============================================================ */
+
+.panel-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 150;
+  backdrop-filter: blur(1px);
+}
+.panel-backdrop.hidden { display: none; }
+
+.programs-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 360px;
+  max-width: 92vw;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  box-shadow: -4px 0 24px rgba(0,0,0,.12);
+  z-index: 160;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 280ms cubic-bezier(.4,0,.2,1);
+}
+
+.programs-panel.open   { transform: translateX(0); }
+.programs-panel.hidden { display: none; }
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.panel-header h2 {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.panel-save-area {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.programs-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.panel-hint {
+  padding: 20px 18px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+  font-style: italic;
+}
+
+.panel-error {
+  padding: 14px 18px;
+  color: var(--danger);
+  font-size: 0.85rem;
+  background: var(--danger-light);
+  margin: 8px 12px;
+  border-radius: var(--radius-sm);
+}
+
+/* Individual program card in the drawer */
+.program-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 18px;
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition);
+}
+
+.program-item:last-child { border-bottom: none; }
+.program-item:hover      { background: var(--surface-alt); }
+
+.program-item.active {
+  background: var(--accent-light);
+  border-left: 3px solid var(--accent);
+  padding-left: 15px;
+}
+
+.program-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.program-item-name {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.program-item-date {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.program-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   NAME INPUT MODAL (smaller variant)
+   ============================================================ */
+
+.modal-sm {
+  max-width: 400px;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.field-input {
+  width: 100%;
+  padding: 9px 12px;
+  font-size: 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  transition: border-color var(--transition), box-shadow var(--transition);
+  outline: none;
+}
+
+.field-input:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+}
+
+/* ============================================================
+   LOADING OVERLAY
+   ============================================================ */
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,.6);
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(1px);
+}
+
+.loading-overlay.hidden { display: none; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 700ms linear infinite;
+}
+
+/* Disable all interactive elements while loading */
+.loading-overlay:not(.hidden) ~ * button,
+.loading-overlay:not(.hidden) ~ * input,
+.loading-overlay:not(.hidden) ~ * select {
+  pointer-events: none;
+}
+
+/* ============================================================
+   SAVE BUTTON STATES
+   ============================================================ */
+
+#btn-save[data-state="saved"] {
+  color: var(--success);
+  border-color: #bbf7d0;
+  background: var(--success-light);
+}
+
+#btn-save[data-state="saved"]:hover {
+  background: #dcfce7;
+}

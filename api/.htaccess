@@ -1,0 +1,6 @@
+RewriteEngine On
+
+# Route /api/programs and /api/programs/123 to programs.php
+# The PHP file parses the full REQUEST_URI itself to extract the ID.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^programs(/\d+)?/?$ programs.php [QSA,L]

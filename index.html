@@ -8,6 +8,7 @@
 </head>
 <body>
 
+  <!-- ── App Header ───────────────────────────────────────────── -->
   <header class="app-header">
     <div class="header-inner">
       <div class="brand">
@@ -17,10 +18,25 @@
         <h1>Program Builder</h1>
       </div>
       <div class="header-actions">
+        <button id="btn-programs" class="btn btn-ghost" title="View and load saved programs">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+          </svg>
+          My Programs
+        </button>
+        <button id="btn-save" class="btn btn-secondary" title="Save program to database">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+            <polyline points="7 3 7 8 15 8"/>
+          </svg>
+          Save Program
+        </button>
+        <div class="header-divider"></div>
         <button id="btn-reset" class="btn btn-ghost" title="Reset all data">Reset</button>
-        <button id="btn-preview" class="btn btn-secondary" title="Preview before export">Preview</button>
+        <button id="btn-preview" class="btn btn-ghost" title="Preview before export">Preview</button>
         <button id="btn-pdf" class="btn btn-primary" title="Download PDF">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
             <polyline points="7 10 12 15 17 10"/>
             <line x1="12" y1="15" x2="12" y2="3"/>
@@ -31,13 +47,52 @@
     </div>
   </header>
 
+  <!-- ── Program Status Bar (visible when a program is loaded) ── -->
+  <div id="program-status" class="program-status hidden">
+    <div class="status-inner">
+      <div class="status-info">
+        <span class="status-label">Editing:</span>
+        <span id="status-name" class="status-name"></span>
+        <span id="status-dirty" class="status-dirty hidden">· unsaved changes</span>
+      </div>
+      <div class="status-actions">
+        <button id="btn-new-program" class="btn btn-sm btn-ghost">New Program</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Main Content ─────────────────────────────────────────── -->
   <main class="app-main">
     <div id="days-container" class="days-container"></div>
   </main>
 
-  <!-- Preview Modal -->
+  <!-- ── Programs Drawer (right panel) ────────────────────────── -->
+  <div id="panel-backdrop" class="panel-backdrop hidden"></div>
+  <aside id="programs-panel" class="programs-panel hidden" role="complementary" aria-label="Saved Programs">
+    <div class="panel-header">
+      <h2>My Programs</h2>
+      <button id="btn-close-panel" class="btn-icon-round" aria-label="Close panel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="panel-save-area">
+      <button id="btn-save-new" class="btn btn-primary" style="width:100%">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Save Current as New Program
+      </button>
+    </div>
+    <div id="programs-list" class="programs-list">
+      <p class="panel-hint">Loading…</p>
+    </div>
+  </aside>
+
+  <!-- ── Preview Modal ────────────────────────────────────────── -->
   <div id="preview-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Program Preview">
-    <div class="modal-backdrop"></div>
+    <div class="modal-backdrop preview-backdrop"></div>
     <div class="modal-box">
       <div class="modal-header">
         <h2>Program Preview</h2>
@@ -51,7 +106,7 @@
       <div class="modal-footer">
         <button class="btn btn-ghost modal-close-btn">Close</button>
         <button id="modal-pdf-btn" class="btn btn-primary">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
             <polyline points="7 10 12 15 17 10"/>
             <line x1="12" y1="15" x2="12" y2="3"/>
@@ -62,7 +117,42 @@
     </div>
   </div>
 
-  <!-- Toast Notification -->
+  <!-- ── Name Input Modal (Save / Rename) ─────────────────────── -->
+  <div id="name-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Save Program">
+    <div class="modal-backdrop name-backdrop"></div>
+    <div class="modal-box modal-sm">
+      <div class="modal-header">
+        <h2 id="name-modal-title">Save Program</h2>
+        <button class="name-modal-close btn-icon-round" aria-label="Cancel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label class="field-label" for="program-name-input">Program Name</label>
+        <input
+          type="text"
+          id="program-name-input"
+          class="field-input"
+          placeholder="e.g. Hypertrophy Block A"
+          maxlength="100"
+          autocomplete="off"
+        >
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost name-modal-close">Cancel</button>
+        <button id="name-modal-confirm" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Loading Overlay ──────────────────────────────────────── -->
+  <div id="loading-overlay" class="loading-overlay hidden" aria-hidden="true">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- ── Toast ────────────────────────────────────────────────── -->
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
